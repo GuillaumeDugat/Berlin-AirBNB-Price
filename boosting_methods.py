@@ -1,13 +1,12 @@
 from sklearn.ensemble import AdaBoostRegressor
 from sklearn.metrics import mean_squared_error
+from sklearn.model_selection import GridSearchCV
+from sklearn.tree import DecisionTreeRegressor
 
 from data_preprocess import get_processed_train_test
 from random_predictor import compute_accuracy_margin_random
 
-if __name__ == '__main__':
-    print('Preprocessing...')
-    X_train, X_test, Y_train, Y_test, _ = get_processed_train_test(path_to_folder='data', add_processing=True)
-
+def ada_boost(X_train, X_test, Y_train, Y_test):
     print('Training model...')
     ADBregr = AdaBoostRegressor(random_state = 42, n_estimators = 4)
     ADBregr.fit(X_train, Y_train)
@@ -20,3 +19,47 @@ if __name__ == '__main__':
 
     mrg = compute_accuracy_margin_random(Y_test, predictions, 20)
     print('Margin accuracy', mrg)
+
+def ada_boost_gridsearch(X_train, X_test, Y_train, Y_test):
+    print('Training model...')
+    ADBregr = AdaBoostRegressor(random_state = 42)
+    pgrid = {
+        'base_estimator': [DecisionTreeRegressor(random_state=42, max_depth=3), DecisionTreeRegressor(random_state=42, max_depth=5)],
+        'n_estimators': [4,8,15,30,50],
+        'learning_rate': [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1],
+        'loss': ['linear'], #['linear', 'square', 'exponential'],
+    }
+    grid_search = GridSearchCV(ADBregr, param_grid=pgrid, scoring='neg_mean_squared_error', cv=5, verbose=3)
+    grid_search.fit(X_train, Y_train)
+
+    print('Best parameters:', grid_search.best_params_)
+    print('MSE on test set:', -grid_search.score(X_test, Y_test))
+    
+    # print('Predictions:')
+    # predictions = grid_search.best_estimator_.predict(X_test)
+
+    # mse = mean_squared_error(Y_test, predictions)
+    # print('MSE:', mse)
+
+    # mrg = compute_accuracy_margin_random(Y_test, predictions, 20)
+    # print('Margin accuracy', mrg)
+
+    # Best parameters: {'learning_rate': 0.01, 'loss': 'linear', 'n_estimators': 8}
+    # MSE on test set: 1519.6215054528334
+
+    # Best parameters: {'learning_rate': 0.001, 'loss': 'linear', 'n_estimators': 4}
+    # MSE on test set: 1652.7434469200057
+
+    # Best parameters: {'base_estimator': DecisionTreeRegressor(random_state=42), 'learning_rate': 0.001, 'loss': 'exponential', 'n_estimators': 30}
+    # MSE on test set: 1472.121773334426
+
+    # Best parameters: {'base_estimator': DecisionTreeRegressor(max_depth=5, random_state=42), 'learning_rate': 0.001, 'loss': 'linear', 'n_estimators': 30}
+    # MSE on test set: 1405.8201892482223
+
+
+if __name__ == '__main__':
+    print('Preprocessing...')
+    X_train, X_test, Y_train, Y_test, _ = get_processed_train_test(path_to_folder='data', add_processing=False)
+
+    # ada_boost(X_train, X_test, Y_train, Y_test)
+    ada_boost_gridsearch(X_train, X_test, Y_train, Y_test)
