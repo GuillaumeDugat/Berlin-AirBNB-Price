@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 from math import sqrt
 from cmath import pi
@@ -7,6 +8,8 @@ import pandas as pd
 
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
 
 
 def convert_date(date_str: str) -> int:
@@ -99,6 +102,26 @@ class TransformBoolean(BaseEstimator, TransformerMixin):
         
         return X
 
+class TransformStrings(BaseEstimator, TransformerMixin):
+
+    def __init__(self, columns_float, columns_int):
+        super().__init__()
+        self.columns_float = columns_float
+        self.columns_int = columns_int
+    
+    def fit(self, X: pd.DataFrame, y=None):
+        return self
+    
+    def transform(self, X:pd.DataFrame, y=None):
+
+        for column in self.columns_float:
+            X[column] = X[column].astype(float)
+        
+        for column in self.columns_int:
+            X[column] = X[column].astype(float).astype(int)
+        
+        return X
+
 def create_pipeline():
 
     location_dict = {
@@ -117,23 +140,78 @@ def create_pipeline():
 
     columns_boolean = ['Is Superhost', 'Instant Bookable']
 
+    columns_float = ['Bathrooms']
+    columns_int = ['Accomodates', 'Bedrooms', 'Beds', 'Guests Included', 'Min Nights']
+
     pipeline_to_return = Pipeline(steps= [
         ('dropnan', DropNan(columns_to_keep)),
         ('onehot', GetDummies(columns_to_encode)),
         ('dates', TransformDate(columns_dates)),
         ('boolean', TransformBoolean(columns_boolean)),
-        ('location', TransformDistance(location_dict))
+        ('location', TransformDistance(location_dict)),
+        ('strings', TransformStrings(columns_float, columns_int))
     ])
 
     return pipeline_to_return
 
+def create_test_split(
+    path_to_csv: str='data/raw/train_airbnb_berlin.csv',
+    test_size: float=0.2,
+    random_seed: int=42
+    ):
+
+    df_raw = pd.read_csv(path_to_csv)
+
+    # Create test sample
+    df_sampled = df_raw.sample(frac=test_size, random_state=random_seed)
+
+    # Retrieve train split
+    rest_index = [k for k in df_raw.index if k not in df_sampled.index]
+    df_rest = df_raw.iloc[rest_index]
     
+    # Reset index
+    df_sampled = df_sampled.reset_index(drop=True)
+    df_rest = df_rest.reset_index(drop=True)
+
+    # Save to csv
+    df_sampled.to_csv('data/split_to_use/train.csv')
+    df_rest.to_csv('data/split_to_use/test.csv')
+
+
+def get_processed_train_test(path_to_folder: str='data/split_to_use', add_processing: bool=False) -> list:
+    
+    path_train = os.path.join(path_to_folder, 'train.csv')
+    path_test = os.path.join(path_to_folder, 'test.csv')
+
+    train_df = pd.read_csv(path_train)
+    test_df = pd.read_csv(path_test)
+
+    processing_pipeline = create_pipeline()
+
+    train_processed_df = processing_pipeline.fit_transform(train_df)
+    test_processed_df = processing_pipeline.fit_transform(test_df)
+
+    columns = np.array(train_processed_df.columns)
+
+    X_train = train_processed_df.loc[:, train_processed_df.columns != 'Price']
+    Y_train = train_processed_df[['Price']].to_numpy().reshape(X_train.shape[0])
+
+    X_test = test_processed_df.loc[:, test_processed_df.columns != 'Price']
+    Y_test = test_processed_df[['Price']].to_numpy().reshape(X_test.shape[0])
+
+
+    if add_processing:
+        X_train = StandardScaler().fit_transform(X_train)
+        X_test = StandardScaler().fit_transform(X_test)
+    else:
+        X_train = X_train.to_numpy()
+        X_test = X_test.to_numpy()
+    
+    return [X_train, X_test, Y_train, Y_test, columns]
+
+
 if __name__ == '__main__':
 
-    raw_dataframe = pd.read_csv('train_airbnb_berlin.csv')
+    create_test_split()
 
-    new_pipeline = create_pipeline()
-
-    processed_dataframe = new_pipeline.fit_transform(raw_dataframe)
-    for column in processed_dataframe.columns:
-        print(column)
+    X_train, X_test, Y_train, Y_test = get_processed_train_test()
