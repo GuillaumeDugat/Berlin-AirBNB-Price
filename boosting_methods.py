@@ -1,4 +1,4 @@
-from sklearn.ensemble import AdaBoostRegressor
+from sklearn.ensemble import AdaBoostRegressor, GradientBoostingRegressor 
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import GridSearchCV
 from sklearn.tree import DecisionTreeRegressor
@@ -19,6 +19,23 @@ def ada_boost(X_train, X_test, Y_train, Y_test):
 
     mrg = compute_accuracy_margin_random(Y_test, predictions, 20)
     print('Margin accuracy', mrg)
+
+
+def gradient_boosted_tree(X_train, X_test, Y_train, Y_test):
+    print('Training model...')
+    GDBreg  = GradientBoostingRegressor(n_estimators = 80, learning_rate=0.1,
+        max_depth = 1, random_state = 42, loss = 'squared_error')
+    GDBreg .fit(X_train, Y_train)
+    
+    print('Predictions:')
+    predictions = GDBreg .predict(X_test)
+
+    mse = mean_squared_error(Y_test, predictions)
+    print('MSE:', mse)
+
+    mrg = compute_accuracy_margin_random(Y_test, predictions, 20)
+    print('Margin accuracy', mrg)
+
 
 def ada_boost_gridsearch(X_train, X_test, Y_train, Y_test):
     print('Training model...')
@@ -62,4 +79,5 @@ if __name__ == '__main__':
     X_train, X_test, Y_train, Y_test, _ = get_processed_train_test(path_to_folder='data', add_processing=False)
 
     # ada_boost(X_train, X_test, Y_train, Y_test)
-    ada_boost_gridsearch(X_train, X_test, Y_train, Y_test)
+    # ada_boost_gridsearch(X_train, X_test, Y_train, Y_test)
+    gradient_boosted_tree(X_train, X_test, Y_train, Y_test)
