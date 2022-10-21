@@ -67,7 +67,7 @@ def ada_boost_gridsearch(X_train, X_test, Y_train, Y_test):
         'base_estimator': [DecisionTreeRegressor(random_state=RANDOM_STATE, max_depth=3), DecisionTreeRegressor(random_state=RANDOM_STATE, max_depth=5)],
         'n_estimators': [4,8,15,30,50],
         'learning_rate': [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1],
-        'loss': ['linear'], #['linear', 'square', 'exponential'],
+        'loss': ['linear', 'square', 'exponential'],
     }
     grid_search = GridSearchCV(ADBregr, param_grid=pgrid, scoring='neg_mean_squared_error', cv=CROSS_VALIDATION, verbose=VERBOSE)
     grid_search.fit(X_train, Y_train)
@@ -121,9 +121,9 @@ def xg_boost_gridsearch(X_train, X_test, Y_train, Y_test):
     ADBregr = XGBRegressor(n_estimators = 40, learning_rate = 0.1, max_depth = 3, random_state=RANDOM_STATE)
     ADBregr  = XGBRegressor(random_state = RANDOM_STATE)
     pgrid = {
-        'n_estimators': [4,8,15,30,50, 80],
-        'learning_rate': [0.01, 0.05, 0.1, 0.5],
-        'max_depth': [2, 3, 5],
+        'n_estimators': [500, 750, 1000],
+        'learning_rate': [0.01, 0.05, 0.1],
+        'max_depth': [2, 3],
     }
     grid_search = GridSearchCV(ADBregr, param_grid=pgrid, scoring='neg_mean_squared_error', cv=CROSS_VALIDATION, verbose=VERBOSE)
     le = LabelEncoder()
@@ -135,6 +135,15 @@ def xg_boost_gridsearch(X_train, X_test, Y_train, Y_test):
 
     # Best parameters: {'learning_rate': 0.1, 'max_depth': 2, 'n_estimators': 80}
     # MSE on test set: 1571.7219762337752
+
+    # Best parameters: {'learning_rate': 0.1, 'max_depth': 2, 'n_estimators': 100}
+    # MSE on test set: 1560.1783347476407
+
+    # Best parameters: {'learning_rate': 0.05, 'max_depth': 2, 'n_estimators': 400}
+    # MSE on test set: 1542.7927327822424
+
+    # Best parameters: {'learning_rate': 0.05, 'max_depth': 2, 'n_estimators': 500}
+    # MSE on test set: 1540.5413178454528
 
 
 if __name__ == '__main__':
