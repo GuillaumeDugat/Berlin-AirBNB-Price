@@ -112,6 +112,27 @@ def gradient_boosted_tree_gridsearch(X_train, X_test, Y_train, Y_test):
     # MSE on test set: 1356.829711237964
 
 
+def xg_boost_gridsearch(X_train, X_test, Y_train, Y_test):
+    print('Training model...')
+    ADBregr = XGBRegressor(n_estimators = 40, learning_rate = 0.1, max_depth = 3, random_state=42)
+    ADBregr  = XGBRegressor(random_state = 42)
+    pgrid = {
+        'n_estimators': [4,8,15,30,50, 80],
+        'learning_rate': [0.01, 0.05, 0.1, 0.5],
+        'max_depth': [2, 3, 5],
+    }
+    grid_search = GridSearchCV(ADBregr, param_grid=pgrid, scoring='neg_mean_squared_error', cv=5, verbose=3)
+    le = LabelEncoder()
+    Y_train = le.fit_transform(Y_train)
+    grid_search.fit(X_train, Y_train)
+
+    print('Best parameters:', grid_search.best_params_)
+    print('MSE on test set:', -grid_search.score(X_test, Y_test))
+
+    # Best parameters: {'learning_rate': 0.1, 'max_depth': 2, 'n_estimators': 80}
+    # MSE on test set: 1571.7219762337752
+
+
 if __name__ == '__main__':
     print('Preprocessing...')
     X_train, X_test, Y_train, Y_test, _ = get_processed_train_test(path_to_folder='data', add_processing=False)
@@ -120,4 +141,5 @@ if __name__ == '__main__':
     # ada_boost_gridsearch(X_train, X_test, Y_train, Y_test)
     # gradient_boosted_tree(X_train, X_test, Y_train, Y_test)
     # gradient_boosted_tree_gridsearch(X_train, X_test, Y_train, Y_test)
-    xg_boost(X_train, X_test, Y_train, Y_test)
+    # xg_boost(X_train, X_test, Y_train, Y_test)
+    xg_boost_gridsearch(X_train, X_test, Y_train, Y_test)
