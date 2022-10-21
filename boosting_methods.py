@@ -8,9 +8,13 @@ from sklearn.preprocessing import LabelEncoder
 from data_preprocess import get_processed_train_test
 from random_predictor import compute_accuracy_margin_random
 
+RANDOM_STATE = 42
+CROSS_VALIDATION = 5
+VERBOSE = 3
+
 def ada_boost(X_train, X_test, Y_train, Y_test):
     print('Training model...')
-    ADBregr = AdaBoostRegressor(random_state = 42, n_estimators = 4)
+    ADBregr = AdaBoostRegressor(random_state = RANDOM_STATE, n_estimators = 4)
     ADBregr.fit(X_train, Y_train)
     
     print('Predictions:')
@@ -26,7 +30,7 @@ def ada_boost(X_train, X_test, Y_train, Y_test):
 def gradient_boosted_tree(X_train, X_test, Y_train, Y_test):
     print('Training model...')
     GDBreg  = GradientBoostingRegressor(n_estimators = 80, learning_rate=0.1,
-        max_depth = 1, random_state = 42, loss = 'squared_error')
+        max_depth = 1, random_state = RANDOM_STATE, loss = 'squared_error')
     GDBreg .fit(X_train, Y_train)
     
     print('Predictions:')
@@ -41,7 +45,7 @@ def gradient_boosted_tree(X_train, X_test, Y_train, Y_test):
 
 def xg_boost(X_train, X_test, Y_train, Y_test):
     print('Training model...')
-    ADBregr = XGBRegressor(n_estimators = 40, learning_rate = 0.1, max_depth = 3, random_state=42)
+    ADBregr = XGBRegressor(n_estimators = 40, learning_rate = 0.1, max_depth = 3, random_state=RANDOM_STATE)
     le = LabelEncoder()
     Y_train = le.fit_transform(Y_train)
     ADBregr.fit(X_train, Y_train)
@@ -58,14 +62,14 @@ def xg_boost(X_train, X_test, Y_train, Y_test):
 
 def ada_boost_gridsearch(X_train, X_test, Y_train, Y_test):
     print('Training model...')
-    ADBregr = AdaBoostRegressor(random_state = 42)
+    ADBregr = AdaBoostRegressor(random_state = RANDOM_STATE)
     pgrid = {
-        'base_estimator': [DecisionTreeRegressor(random_state=42, max_depth=3), DecisionTreeRegressor(random_state=42, max_depth=5)],
+        'base_estimator': [DecisionTreeRegressor(random_state=RANDOM_STATE, max_depth=3), DecisionTreeRegressor(random_state=RANDOM_STATE, max_depth=5)],
         'n_estimators': [4,8,15,30,50],
         'learning_rate': [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1],
         'loss': ['linear'], #['linear', 'square', 'exponential'],
     }
-    grid_search = GridSearchCV(ADBregr, param_grid=pgrid, scoring='neg_mean_squared_error', cv=5, verbose=3)
+    grid_search = GridSearchCV(ADBregr, param_grid=pgrid, scoring='neg_mean_squared_error', cv=CROSS_VALIDATION, verbose=VERBOSE)
     grid_search.fit(X_train, Y_train)
 
     print('Best parameters:', grid_search.best_params_)
@@ -95,14 +99,14 @@ def ada_boost_gridsearch(X_train, X_test, Y_train, Y_test):
 
 def gradient_boosted_tree_gridsearch(X_train, X_test, Y_train, Y_test):
     print('Training model...')
-    GDBreg  = GradientBoostingRegressor(random_state = 42)
+    GDBreg  = GradientBoostingRegressor(random_state = RANDOM_STATE)
     pgrid = {
         'n_estimators': [4,8,15,30,50, 100],
         'learning_rate': [0.001, 0.01, 0.05, 0.1, 0.5, 1],
         'max_depth': [1, 3, 5],
         'loss': ['squared_error', 'absolute_error', 'huber', 'quantile'],
     }
-    grid_search = GridSearchCV(GDBreg, param_grid=pgrid, scoring='neg_mean_squared_error', cv=5, verbose=3)
+    grid_search = GridSearchCV(GDBreg, param_grid=pgrid, scoring='neg_mean_squared_error', cv=CROSS_VALIDATION, verbose=VERBOSE)
     grid_search.fit(X_train, Y_train)
 
     print('Best parameters:', grid_search.best_params_)
@@ -114,14 +118,14 @@ def gradient_boosted_tree_gridsearch(X_train, X_test, Y_train, Y_test):
 
 def xg_boost_gridsearch(X_train, X_test, Y_train, Y_test):
     print('Training model...')
-    ADBregr = XGBRegressor(n_estimators = 40, learning_rate = 0.1, max_depth = 3, random_state=42)
-    ADBregr  = XGBRegressor(random_state = 42)
+    ADBregr = XGBRegressor(n_estimators = 40, learning_rate = 0.1, max_depth = 3, random_state=RANDOM_STATE)
+    ADBregr  = XGBRegressor(random_state = RANDOM_STATE)
     pgrid = {
         'n_estimators': [4,8,15,30,50, 80],
         'learning_rate': [0.01, 0.05, 0.1, 0.5],
         'max_depth': [2, 3, 5],
     }
-    grid_search = GridSearchCV(ADBregr, param_grid=pgrid, scoring='neg_mean_squared_error', cv=5, verbose=3)
+    grid_search = GridSearchCV(ADBregr, param_grid=pgrid, scoring='neg_mean_squared_error', cv=CROSS_VALIDATION, verbose=VERBOSE)
     le = LabelEncoder()
     Y_train = le.fit_transform(Y_train)
     grid_search.fit(X_train, Y_train)
