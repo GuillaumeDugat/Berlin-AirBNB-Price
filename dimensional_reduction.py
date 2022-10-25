@@ -10,12 +10,24 @@ mpl.rc('xtick', labelsize=12)
 mpl.rc('ytick', labelsize=12)
 
 import pandas as pd
+import numpy as np
 import statsmodels.api as sm
 import itertools
 
+
+#PCA Selection imports
+from sklearn.preprocessing import scale 
+from sklearn import model_selection
+from sklearn.decomposition import PCA
+from sklearn.linear_model import LinearRegression
+from sklearn.cross_decomposition import PLSRegression, PLSSVD
+from sklearn.metrics import mean_squared_error
+
+# Some libraries for PCA visualization
+import seaborn as sns 
+import plotly.graph_objs as go
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
-
 
 
 """
@@ -165,8 +177,49 @@ def subsetSelection(X_train: pd.DataFrame, y_train:pd.Series, X_test: pd.DataFra
     bestModels = pd.DataFrame({"typeError": errorEvaluated, "model": chosenModels, "features": features})
     return bestModels
 
-def crossValidationApproach(typeSelection: str='Backeatd'):
-    pass
+
+"""
+VarianceExplained goes from 0 to 1
+Returns the PCA model that arrices to the variance explained desired
+"""
+def pcaSelection(X_train: pd.DataFrame, y_train:pd.Series, X_test: pd.DataFrame, y_test:pd.Series, varExplained: float):
+    
+    pca = PCA()
+    X_reduced_train = pca.fit_transform(X_train)
+    n = len(X_reduced_train)
+    kf_10 = model_selection.KFold( n_splits=10, shuffle=True, random_state=1 )
+    regr = LinearRegression()
+    mse = []
+
+    score = -1*model_selection.cross_val_score(regr, np.ones((n,1)), y_train.ravel(), cv=kf_10, scoring='neg_mean_squared_error').mean()    
+    mse.append(score)
+
+    for i in np.arange(1, len(X_train.columns)):
+        score = -1*model_selection.cross_val_score(regr, X_reduced_train[:,:i], y_train.ravel(), cv=kf_10, scoring='neg_mean_squared_error').mean()
+        mse.append(score)
+
+    plt.plot(mse, '-v')
+    plt.xlabel('Number of principal components in regression')
+    plt.ylabel('MSE')
+    plt.title('House price')
+    plt.xlim(xmin=-1)
+
+    elements = len([elem for elem in np.cumsum(np.round(pca.explained_variance_ratio_, decimals=4)) if elem <= varExplained ])
+    
+    pcamodel = PCA(n_components=elements)
+    pca = pcamodel.fit_transform(scale(X_test))
+    return pca
+
+
+"""
+WIP
+
+Returns the PLS Model with the number of desired components
+"""
+def plsSelection(X_train: pd.DataFrame, y_train:pd.Series, n_components: int) :
+    pls = PLSRegression(n_components)
+    X_transform = pls.fit_transform(X_train, y_train.ravel())
+    return X_transform
 
 
 
