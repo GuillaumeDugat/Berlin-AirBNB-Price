@@ -3,8 +3,18 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 
+BEST_PARAMS_TREE = {
+    'max_depth': 5,
+    'max_features': 'auto',
+    'min_samples_leaf': 4,
+    'min_samples_split': 9,
+    'splitter': 'best'
+}
 
-def create_decision_tree_model():
+def create_decision_tree_model(best_model: bool=False):
+
+    if best_model:
+        return DecisionTreeRegressor(**BEST_PARAMS_TREE)
 
     regressor = DecisionTreeRegressor(random_state=42)
 
