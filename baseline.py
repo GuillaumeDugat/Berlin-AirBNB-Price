@@ -2,7 +2,7 @@
 
 import numpy as np
 from sklearn.base import BaseEstimator
-from sklearn.metrics import mean_squared_error
+from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.linear_model import LinearRegression
 
@@ -32,6 +32,9 @@ def baseline(model, X_train, X_test, Y_train, Y_test):
 
     rmse = np.sqrt(mean_squared_error(Y_test, predictions))
     print('Root Mean Square Error:', rmse)
+
+    mae = mean_absolute_error(Y_test, predictions)
+    print('Mean Absolute Error:', mae)
 
     mrg = compute_accuracy_margin_random(Y_test, predictions, 20)
     print('Margin accuracy', mrg)
