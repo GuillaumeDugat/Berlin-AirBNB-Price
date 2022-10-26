@@ -221,7 +221,7 @@ def create_test_split(
     df_rest.to_csv('data/split_to_use/test.csv')
 
 
-def get_processed_train_test(path_to_folder: str='data/split_to_use', add_processing: bool=False) -> list:
+def get_processed_train_test(path_to_folder: str='data', add_processing: bool=False) -> list:
     
     path_train = os.path.join(path_to_folder, 'train.csv')
     path_test = os.path.join(path_to_folder, 'test.csv')
