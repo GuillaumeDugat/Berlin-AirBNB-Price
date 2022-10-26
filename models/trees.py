@@ -30,8 +30,15 @@ def create_decision_tree_model(best_model: bool=False):
 
     return GridSearchCV(regressor, param_grid=pgrid, scoring='neg_mean_squared_error', cv=3, verbose=2)
 
-BEST_PARAMS_FOREST = {}
-#MSE = 
+BEST_PARAMS_FOREST = {
+    'n_estimators': 200,
+    'min_samples_split': 10,
+    'min_samples_leaf': 1,
+    'max_features': 'sqrt',
+    'max_depth': 70,
+    'bootstrap': True
+}
+#MSE = 1600
 
 def create_random_forest_model(best_model: bool=False):
 
