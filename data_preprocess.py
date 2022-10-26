@@ -174,11 +174,11 @@ def create_test_split(
     df_rest = df_rest.reset_index(drop=True)
 
     # Save to csv
-    df_sampled.to_csv('data/split_to_use/train.csv')
-    df_rest.to_csv('data/split_to_use/test.csv')
+    df_sampled.to_csv('data/test.csv')
+    df_rest.to_csv('data/train.csv')
 
 
-def get_processed_train_test(path_to_folder: str='data/split_to_use', add_processing: bool=False) -> list:
+def get_processed_train_test(path_to_folder: str='data/', add_processing: bool=False) -> list:
     
     path_train = os.path.join(path_to_folder, 'train.csv')
     path_test = os.path.join(path_to_folder, 'test.csv')
@@ -189,7 +189,7 @@ def get_processed_train_test(path_to_folder: str='data/split_to_use', add_proces
     processing_pipeline = create_pipeline()
 
     train_processed_df = processing_pipeline.fit_transform(train_df)
-    test_processed_df = processing_pipeline.fit_transform(test_df)
+    test_processed_df = processing_pipeline.transform(test_df)
 
     columns = np.array(train_processed_df.columns)
 
@@ -201,8 +201,9 @@ def get_processed_train_test(path_to_folder: str='data/split_to_use', add_proces
 
 
     if add_processing:
-        X_train = StandardScaler().fit_transform(X_train)
-        X_test = StandardScaler().fit_transform(X_test)
+        scaler = StandardScaler()
+        X_train = scaler.fit_transform(X_train)
+        X_test = scaler.transform(X_test)
     else:
         X_train = X_train.to_numpy()
         X_test = X_test.to_numpy()
