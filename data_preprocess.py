@@ -211,12 +211,14 @@ def create_test_split(
     df_rest.to_csv('data/split_to_use/test.csv')
 
 
-def get_processed_train_test(path_to_folder: str='data', add_processing: bool=False) -> list:
+def get_processed_train_test(path_to_folder: str='data', add_processing: bool=False, remove_outliers: bool=True) -> list:
     
     path_train = os.path.join(path_to_folder, 'train.csv')
     path_test = os.path.join(path_to_folder, 'test.csv')
 
     train_df = pd.read_csv(path_train)
+    if remove_outliers: #99% of prices are below this point
+        train_df = train_df[train_df['Price'] <= 250]
     test_df = pd.read_csv(path_test)
 
     processing_pipeline = create_pipeline()
