@@ -6,7 +6,7 @@ import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-from preprocessing_classes import (
+from preprocessing.preprocessing_classes import (
     KeepColumns, FeatureImputing, DropNan, GetDummies, TransformDate,
     TransformDistance, TransformBoolean, TransformStrings
 )
