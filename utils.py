@@ -41,3 +41,17 @@ def full_evaluation(goals: np.array, predictions: np.array) -> dict:
     }
 
     return all_metrics
+
+def print_eval(goals: np.array, predictions: np.array):
+
+    all_metrics = full_evaluation(goals, predictions)
+
+    print('Mean Squared Error : {}'.format(all_metrics['mean_squared_error']))
+    print('Root Mean Squared Error : {}'.format(all_metrics['root_mean_squared_error']))
+    print('Mean Absolute Error : {}'.format(all_metrics['mean_absolute_error']))
+
+    print('1/10 of predictions are better than : {}'.format(all_metrics['quantiles'][0.9]))
+    print('1/4 of predictions are better than : {}'.format(all_metrics['quantiles'][0.25]))
+    print('Half of predictions are better than : {}'.format(all_metrics['quantiles'][0.5]))
+    print('1/4 of predictions are worse than : {}'.format(all_metrics['quantiles'][0.75]))
+    print('1/10 of predictions are worse than : {}'.format(all_metrics['quantiles'][0.9]))
