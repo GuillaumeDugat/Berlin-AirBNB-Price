@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 from preprocessing.baseline_preprocessing import get_processed_train_test
-from models.baseline import create_mean_reg, create_KNN_mean_reg, create_linear_reg
+from models.baseline import create_mean_reg, create_KNN_mean_reg, create_linear_reg, create_random_predictor
 from models.boosting import create_ada_boost, create_gradient_boosted_tree, create_xg_boost
 
 
@@ -28,8 +28,9 @@ if __name__ == '__main__':
     # model = create_mean_reg()
     # model = create_KNN_mean_reg(columns)
     # model = create_linear_reg()
+    model = create_random_predictor()
     # model = create_ada_boost()
     # model = create_gradient_boosted_tree()
-    model = create_xg_boost()
+    # model = create_xg_boost()
     baseline(model, X_train, X_test, Y_train, Y_test)
 
