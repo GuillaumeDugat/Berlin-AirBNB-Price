@@ -1,6 +1,15 @@
+import numpy as np
+from datetime import datetime
+
 from sklearn.metrics import mean_squared_error,mean_absolute_error
 
-import numpy as np
+def convert_date(date_str: str) -> int:
+ 
+    date_compare = datetime(2022, 10, 13)
+    date_to_compare = datetime.strptime(date_str, '%Y-%m-%d')
+    comparison = (date_compare - date_to_compare).days
+
+    return comparison
 
 def get_quantiles_error(goals: np.array, predictions: np.array) -> dict:
 

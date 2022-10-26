@@ -1,8 +1,5 @@
 import numpy as np
-from eval_metrics import get_margin_accuracy
 import random
-
-from sklearn.metrics import mean_squared_error
 
 def get_repartition(arr: np.array) -> dict:
 
@@ -33,16 +30,3 @@ def get_predictions(Y_train: np.array, Y_test: np.array) -> np.array:
     predictions = np.array([get_random_price(repartition) for k in range(Y_test.shape[0])])
 
     return predictions
-
-
-def compute_MSE_random(Y_train: np.array, Y_test: np.array) -> float:
-
-    predictions = get_predictions(Y_train, Y_test)
-
-    return mean_squared_error(Y_test, predictions)
-
-def compute_accuracy_margin_random(Y_train: np.array, Y_test: np.array, margin: int) -> float:
-
-    predictions = get_predictions(Y_train, Y_test)
-    
-    return get_margin_accuracy(Y_test, predictions, margin)

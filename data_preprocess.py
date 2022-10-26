@@ -1,5 +1,4 @@
 import os
-from datetime import datetime
 from math import sqrt
 from cmath import pi
 
@@ -11,15 +10,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
-
-
-def convert_date(date_str: str) -> int:
- 
-    date_compare = datetime(2022, 10, 13)
-    date_to_compare = datetime.strptime(date_str, '%Y-%m-%d')
-    comparison = (date_compare - date_to_compare).days
-
-    return comparison
 
 
 class KeepColumns(BaseEstimator, TransformerMixin):
