@@ -2,12 +2,8 @@
 
 import numpy as np
 from sklearn.base import BaseEstimator
-from sklearn.metrics import mean_squared_error, mean_absolute_error
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.linear_model import LinearRegression
-
-from data_preprocess import get_processed_train_test
-from random_predictor import compute_accuracy_margin_random
 
 
 class MeanEstimator(BaseEstimator):
@@ -24,33 +20,26 @@ class MeanEstimator(BaseEstimator):
     def predict(self, X):
         return np.full(X.shape[0], self.mean)
 
+class KNNMeanEstimator(KNeighborsRegressor):
+    """Use the mean of y among the closest neighbors for predictions"""
+    def __init__(self, columns, **kwargs):
+        super().__init__(**kwargs)
+        self.columns = "" # To prevent bug in __str__
+        self.selection_col = np.isin(columns[:-1], ["Latitude", "Longitude"]) # Select only latitude and longitude
 
-def baseline(model, X_train, X_test, Y_train, Y_test):
-    print('Model :', model)
-    model.fit(X_train, Y_train)
-    predictions = model.predict(X_test)
+    def fit(self, X, y):
+        return super().fit(X[:, self.selection_col], y)
 
-    rmse = np.sqrt(mean_squared_error(Y_test, predictions))
-    print('Root Mean Square Error:', rmse)
-
-    mae = mean_absolute_error(Y_test, predictions)
-    print('Mean Absolute Error:', mae)
-
-    mrg = compute_accuracy_margin_random(Y_test, predictions, 20)
-    print('Margin accuracy', mrg)
-
-    print()
+    def predict(self, X):
+        return super().predict(X[:, self.selection_col])
 
 
+def create_mean_reg():
+    return MeanEstimator()
 
-if __name__ == '__main__':
-    print('Preprocessing...\n')
-    X_train, X_test, Y_train, Y_test, columns = get_processed_train_test(path_to_folder='data', add_processing=False)
+def create_KNN_mean_reg(columns):
+    return KNNMeanEstimator(columns, n_neighbors=100, weights='uniform')
 
-    baseline(MeanEstimator(), X_train, X_test, Y_train, Y_test)
-    
-    selection_col = np.isin(columns[:-1], ["Latitude", "Longitude"]) # Select only latitude and longitude
-    baseline(KNeighborsRegressor(n_neighbors=100, weights='uniform'), X_train[:, selection_col], X_test[:, selection_col], Y_train, Y_test)
-
-    baseline(LinearRegression(), X_train, X_test, Y_train, Y_test)
+def create_linear_reg():
+    return LinearRegression()
 
