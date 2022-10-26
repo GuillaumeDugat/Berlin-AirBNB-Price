@@ -8,6 +8,10 @@ RANDOM_STATE = 42
 CROSS_VALIDATION = 5
 VERBOSE = 3
 
+BEST_PARAMS_ADA_BOOST = ...
+BEST_PARAMS_GRADIENT_BOOSTED_TREE = ...
+BEST_PARAMS_XG_BOOST = ...
+
 class XGBRegressorCustom(XGBRegressor):
     """Need to LabelEncoder on y in fit, to prevent an error"""
 
@@ -17,7 +21,9 @@ class XGBRegressorCustom(XGBRegressor):
 
 
 
-def create_ada_boost():
+def create_ada_boost(best_model: bool=False):
+    if best_model:
+        return AdaBoostRegressor(random_state = RANDOM_STATE, **BEST_PARAMS_ADA_BOOST)
     ADBregr = AdaBoostRegressor(random_state = RANDOM_STATE)
     pgrid = {
         'base_estimator': [DecisionTreeRegressor(random_state=RANDOM_STATE, max_depth=3), DecisionTreeRegressor(random_state=RANDOM_STATE, max_depth=5)],
@@ -27,7 +33,9 @@ def create_ada_boost():
     }
     return GridSearchCV(ADBregr, param_grid=pgrid, scoring='neg_mean_squared_error', cv=CROSS_VALIDATION, verbose=VERBOSE)
 
-def create_gradient_boosted_tree():
+def create_gradient_boosted_tree(best_model: bool=False):
+    if best_model:
+        return GradientBoostingRegressor(random_state = RANDOM_STATE, **BEST_PARAMS_GRADIENT_BOOSTED_TREE)
     GDBreg  = GradientBoostingRegressor(random_state = RANDOM_STATE)
     pgrid = {
         'n_estimators': [4,8,15,30,50, 100],
@@ -37,7 +45,9 @@ def create_gradient_boosted_tree():
     }
     return GridSearchCV(GDBreg, param_grid=pgrid, scoring='neg_mean_squared_error', cv=CROSS_VALIDATION, verbose=VERBOSE)
 
-def create_xg_boost():
+def create_xg_boost(best_model: bool=False):
+    if best_model:
+        return XGBRegressorCustom(random_state = RANDOM_STATE, **BEST_PARAMS_XG_BOOST)
     ADBregr  = XGBRegressorCustom(random_state = RANDOM_STATE)
     pgrid = {
         'n_estimators': [5, 10, 50, 100], #[500, 750, 1000],
