@@ -2,36 +2,16 @@ import time
 from typing import List
 import math
 
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-# Style options for plots.
-mpl.rc('axes', labelsize=14)
-mpl.rc('xtick', labelsize=12)
-mpl.rc('ytick', labelsize=12)
-
 import pandas as pd
 import numpy as np
-import statsmodels.api as sm
 import itertools
 
-
 #PCA Selection imports
-from sklearn.preprocessing import scale 
-from sklearn import model_selection
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
 from sklearn.cross_decomposition import PLSRegression
-from sklearn.metrics import mean_squared_error
-
-# Some libraries for PCA visualization
-import seaborn as sns 
-import plotly.graph_objs as go
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
-
 
 """
 Returns a dict with the features applied to a Linear Regression Model with k-folding  
@@ -136,7 +116,6 @@ def pcaSelection(X_train: pd.DataFrame, numFeatures: int):
 
 
 """
-
 Returns the PLS Modified X_transform with the number of desired components
 """
 def plsSelection(X_train: pd.DataFrame, y_train:pd.Series, n_components: int) :
