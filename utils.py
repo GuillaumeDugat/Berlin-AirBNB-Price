@@ -11,6 +11,7 @@ def convert_date(date_str: str) -> int:
 
     return comparison
 
+
 def get_quantiles_error(goals: np.array, predictions: np.array) -> dict:
 
     absolute_errors = np.abs(goals-predictions)
