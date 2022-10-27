@@ -4,7 +4,6 @@ import numpy as np
 import pandas as pd
 
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
 
 from preprocessing.preprocessing_classes import (
     KeepColumns, FeatureImputing, DropNan, GetDummies, TransformDate,
@@ -13,7 +12,7 @@ from preprocessing.preprocessing_classes import (
 
 
 
-def create_pipeline():
+def create_pipeline(imputing_missing_values):
 
     location_dict = {
         'ALEXANDERPLATZ' : (52.5229547506655, 13.415715439885059),
@@ -47,7 +46,7 @@ def create_pipeline():
     columns_float = ['Bathrooms']
     columns_int = ['Accomodates', 'Bedrooms', 'Beds', 'Guests Included', 'Min Nights']
 
-    pipeline_to_return = Pipeline(steps= [
+    steps= [
         ('keep_columns', KeepColumns(columns_to_keep)),
         ('dates', TransformDate(columns_dates)),
         # ('imputing', FeatureImputing(imputing_dict)),
@@ -56,7 +55,11 @@ def create_pipeline():
         ('boolean', TransformBoolean(columns_boolean)),
         ('location', TransformDistance(location_dict)),
         ('strings', TransformStrings(columns_float, columns_int))
-    ])
+    ]
+    if imputing_missing_values:
+        steps.insert(2, ('imputing', FeatureImputing(imputing_dict)))
+
+    pipeline_to_return = Pipeline(steps=steps)
 
     return pipeline_to_return
 
@@ -84,7 +87,11 @@ def create_test_split(
     df_sampled.to_csv('data/test.csv')
 
 
-def get_processed_train_test(path_to_folder: str='data', add_processing: bool=False, remove_outliers: bool=True) -> list:
+def get_baseline_preprocessed_train_test(
+    path_to_folder: str='data',
+    remove_outliers: bool=True,
+    imputing_missing_values: bool=False
+) -> list:
     
     path_train = os.path.join(path_to_folder, 'train.csv')
     path_test = os.path.join(path_to_folder, 'test.csv')
@@ -94,7 +101,7 @@ def get_processed_train_test(path_to_folder: str='data', add_processing: bool=Fa
         train_df = train_df[train_df['Price'] <= 250]
     test_df = pd.read_csv(path_test)
 
-    processing_pipeline = create_pipeline()
+    processing_pipeline = create_pipeline(imputing_missing_values)
 
     train_processed_df = processing_pipeline.fit_transform(train_df)
     test_processed_df = processing_pipeline.transform(test_df)
@@ -107,14 +114,8 @@ def get_processed_train_test(path_to_folder: str='data', add_processing: bool=Fa
     X_test = test_processed_df.loc[:, test_processed_df.columns != 'Price']
     Y_test = test_processed_df[['Price']].to_numpy().reshape(X_test.shape[0])
 
-
-    if add_processing:
-        scaler = StandardScaler() # Transform into numpy arrays
-        X_train = scaler.fit_transform(X_train)
-        X_test = scaler.transform(X_test)
-    else:
-        X_train = X_train.to_numpy()
-        X_test = X_test.to_numpy()
+    X_train = X_train.to_numpy()
+    X_test = X_test.to_numpy()
     
     return [X_train, X_test, Y_train, Y_test, columns]
 
