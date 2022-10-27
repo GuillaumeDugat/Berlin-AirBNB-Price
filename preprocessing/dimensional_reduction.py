@@ -7,11 +7,9 @@ import numpy as np
 import itertools
 
 #PCA Selection imports
-from sklearn.decomposition import PCA
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
-from sklearn.cross_decomposition import PLSRegression
 
 """
 Returns a dict with the features applied to a Linear Regression Model with k-folding  
@@ -102,27 +100,3 @@ def subsetSelection(X_train: pd.DataFrame, y_train:pd.Series, typeSelection: str
     models = getModels(X_train, y_train, typeSelection)
     features = models.iloc[models['MSE'].astype('float').argmin()]['features']
     return features
-
-
-"""
-numFeatures is the number of components desired
-Returns the PCA model with the number of features desired
-"""
-def pcaSelection(X_train: pd.DataFrame, numFeatures: int):
-
-    pcamodel = PCA(n_components=numFeatures)
-    X_new = pcamodel.fit_transform(X_train)
-    return X_new
-
-
-"""
-Returns the PLS Modified X_transform with the number of desired components
-"""
-def plsSelection(X_train: pd.DataFrame, y_train:pd.Series, n_components: int) :
-    pls = PLSRegression(n_components)
-    X_transform = pls.fit_transform(X_train, y_train.ravel())
-    return X_transform
-
-
-
-
