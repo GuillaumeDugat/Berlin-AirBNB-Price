@@ -5,6 +5,7 @@ from sklearn.preprocessing import StandardScaler
 from preprocessing.baseline_preprocessing import get_baseline_preprocessed_train_test
 from models.baseline import create_mean_reg, create_KNN_mean_reg, create_linear_reg, create_random_predictor
 from models.boosting import create_ada_boost, create_gradient_boosted_tree, create_xg_boost
+from utils import print_eval
 
 
 def preprocess(
@@ -29,24 +30,15 @@ def preprocess(
 
     return X_train, X_test, Y_train, Y_test, columns
 
-def baseline(model, X_train, X_test, Y_train, Y_test):
-    print('Model :', model)
-    model.fit(X_train, Y_train)
-    predictions = model.predict(X_test)
 
-    rmse = np.sqrt(mean_squared_error(Y_test, predictions))
-    print('Root Mean Square Error:', rmse)
-
-    mae = mean_absolute_error(Y_test, predictions)
-    print('Mean Absolute Error:', mae)
-
-    print()
-
-
-
-if __name__ == '__main__':
+def main():
     print('Preprocessing...\n')
-    X_train, X_test, Y_train, Y_test, columns = preprocess(path_to_folder='data', rescaling=False)
+    X_train, X_test, Y_train, Y_test, columns = preprocess(
+        path_to_folder='data',
+        remove_outliers=True,
+        imputing_missing_values=False,
+        rescaling=False
+    )
 
     # model = create_mean_reg()
     # model = create_KNN_mean_reg(columns)
@@ -55,5 +47,13 @@ if __name__ == '__main__':
     # model = create_ada_boost()
     # model = create_gradient_boosted_tree()
     # model = create_xg_boost()
-    baseline(model, X_train, X_test, Y_train, Y_test)
 
+    print('Training model...\n')
+    model.fit(X_train, Y_train)
+
+    predictions = model.predict(X_test)
+    print_eval(Y_test, predictions)
+
+
+if __name__ == '__main__':
+    main()
