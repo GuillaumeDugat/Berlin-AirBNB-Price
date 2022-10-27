@@ -14,6 +14,8 @@ def main():
         rescaling=False,
         pca=False,
         pls=False,
+        forward_selection=False,
+        backward_selection=False,
     )
 
     ###############    Model should be selected here    ###############

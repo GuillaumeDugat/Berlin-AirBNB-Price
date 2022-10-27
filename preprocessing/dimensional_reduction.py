@@ -11,6 +11,11 @@ from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
 
+from preprocessing.preprocessing_classes import SelectFeatures
+
+FORWARD_SELECTION_BEST_FEATURES = ...
+BACKWARD_SELECTION_BEST_FEATURES = ...
+
 """
 Returns a dict with the features applied to a Linear Regression Model with k-folding  
 and the mean of the mean squared error applied to each model.
@@ -100,3 +105,10 @@ def subsetSelection(X_train: pd.DataFrame, y_train:pd.Series, typeSelection: str
     models = getModels(X_train, y_train, typeSelection)
     features = models.iloc[models['MSE'].astype('float').argmin()]['features']
     return features
+
+
+def forwardSelection(columns: list, features: list = FORWARD_SELECTION_BEST_FEATURES):
+    return SelectFeatures(columns, features)
+
+def backwardSelection(columns: list, features: list = BACKWARD_SELECTION_BEST_FEATURES):
+    return SelectFeatures(columns, features)

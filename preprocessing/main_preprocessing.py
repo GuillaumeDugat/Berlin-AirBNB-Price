@@ -2,6 +2,7 @@ from sklearn.preprocessing import StandardScaler
 
 from preprocessing.baseline_preprocessing import get_baseline_preprocessed_train_test
 from preprocessing.pca import pcaSelection, plsSelection
+from preprocessing.dimensional_reduction import forwardSelection, backwardSelection
 
 
 def preprocess(
@@ -11,6 +12,8 @@ def preprocess(
     rescaling: bool = False,
     pca: bool = False,
     pls: bool = False,
+    forward_selection: bool = False,
+    backward_selection: bool = False,
 ):
     """Perform all the preprocessing tasks (baseline preprocessing, rescaling, pca or subset selection)"""
     # Baseline preprocessing
@@ -37,5 +40,18 @@ def preprocess(
         pls_transformer = plsSelection()
         X_train, _ = pls_transformer.fit_transform(X_train, Y_train.ravel()) # TODO why does it return a tuple?
         X_test = pls_transformer.transform(X_test)
+    
+    # Subset Selection using forward algorithm (selecting best features, see preprocessing/dimensional_reduction.py)
+    elif forward_selection:
+        features_selector = forwardSelection(columns)
+        X_train = features_selector.transform(X_train)
+        X_test = features_selector.transform(X_test)
+    
+    # Subset Selection using backward algorithm (selecting best features, see preprocessing/dimensional_reduction.py)
+    elif backward_selection:
+        features_selector = backwardSelection(columns)
+        X_train = features_selector.transform(X_train)
+        X_test = features_selector.transform(X_test)
+    
 
     return X_train, X_test, Y_train, Y_test, columns
