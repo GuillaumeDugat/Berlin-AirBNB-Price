@@ -137,3 +137,19 @@ class TransformStrings(BaseEstimator, TransformerMixin):
             X[column] = X[column].astype(float).astype(int)
         
         return X
+
+class SelectFeatures(BaseEstimator, TransformerMixin):
+    """Once converted to numpy array, it is more difficult to 
+    select certain features on X_train and X_test, this class allows to do it easily"""
+
+    def __init__(self, all_columns, columns_to_keep):
+        super().__init__()
+        self.columns_to_keep = "" # To prevent bug in __str__
+        self.all_columns = "" # To prevent bug in __str__
+        self.selection_col = np.isin(all_columns[:-1], columns_to_keep) # Select the specified columns (last one of all_columns is y)
+    
+    def fit(self, X, y=None):
+        return self
+    
+    def transform(self, X, y=None):
+        return X[:, self.selection_col]
