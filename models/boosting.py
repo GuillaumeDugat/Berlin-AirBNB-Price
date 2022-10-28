@@ -9,9 +9,9 @@ CROSS_VALIDATION = 5
 VERBOSE = 3
 N_ITER = 30
 
-BEST_PARAMS_ADA_BOOST = ...
-BEST_PARAMS_GRADIENT_BOOSTED_TREE = ...
-BEST_PARAMS_XG_BOOST = ...
+BEST_PARAMS_ADA_BOOST = {'n_estimators': 30, 'loss': 'square', 'learning_rate': 0.001, 'base_estimator': DecisionTreeRegressor(max_depth=5, random_state=42)}
+BEST_PARAMS_GRADIENT_BOOSTED_TREE = {'n_estimators': 50, 'max_depth': 5, 'loss': 'huber', 'learning_rate': 0.05}
+BEST_PARAMS_XG_BOOST = {'n_estimators': 100, 'max_depth': 5, 'learning_rate': 0.1}
 
 class XGBRegressorCustom(XGBRegressor):
     """Need to LabelEncoder on y in fit, to prevent an error"""

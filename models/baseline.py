@@ -80,7 +80,7 @@ def create_mean_reg():
     return MeanEstimator()
 
 def create_KNN_mean_reg(columns):
-    return KNNMeanEstimator(columns, n_neighbors=100, weights='uniform')
+    return KNNMeanEstimator(columns, n_neighbors=30, weights='uniform')
 
 def create_linear_reg():
     return LinearRegression()
