@@ -30,6 +30,9 @@ def main():
     print('Training model...\n')
     model.fit(X_train, Y_train)
 
+    if "best_params_" in dir(model):
+        print('Best parameters:', model.best_params_)
+
     predictions = model.predict(X_test)
     print_eval(Y_test, predictions)
 
