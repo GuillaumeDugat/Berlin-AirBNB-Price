@@ -8,7 +8,7 @@ from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 BEST_PARAMS_BAGGING = {}
 #MSE =
 
-N_ITER=100
+N_ITER=30
 CROSS_VALIDATION = 5
 VERBOSE = 3
 

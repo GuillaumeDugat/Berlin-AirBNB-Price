@@ -3,7 +3,7 @@ from models.baseline import create_mean_reg, create_KNN_mean_reg, create_linear_
 from models.boosting import create_ada_boost, create_gradient_boosted_tree, create_xg_boost
 from models.bagging import create_bagging_model
 from models.svm import create_SVR_model
-from models.trees import create_decision_tree_model, reate_random_forest_model
+from models.trees import create_decision_tree_model, create_random_forest_model
 from utils import print_eval
 
 
@@ -14,7 +14,7 @@ def main():
         path_to_folder='data',
         remove_outliers=True,
         imputing_missing_values=False,
-        rescaling=False,
+        rescaling=True,
         pca=False,
         pls=False,
         forward_selection=False,

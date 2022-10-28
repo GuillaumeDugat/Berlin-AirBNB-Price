@@ -5,7 +5,7 @@ from sklearn.svm import SVR
 BEST_PARAMS_SVR = {}
 #MSE = 
 
-N_ITER=100
+N_ITER=30
 CROSS_VALIDATION = 5
 VERBOSE = 3
 

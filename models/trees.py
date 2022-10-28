@@ -3,7 +3,7 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 
-N_ITER=100
+N_ITER=30
 CROSS_VALIDATION = 5
 VERBOSE = 3
 
