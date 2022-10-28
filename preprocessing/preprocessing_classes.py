@@ -146,7 +146,7 @@ class SelectFeatures(BaseEstimator, TransformerMixin):
         super().__init__()
         self.columns_to_keep = "" # To prevent bug in __str__
         self.all_columns = "" # To prevent bug in __str__
-        self.selection_col = np.isin(all_columns[:-1], columns_to_keep) # Select the specified columns (last one of all_columns is y)
+        self.selection_col = np.isin([col for col in all_columns if col != "Price"], columns_to_keep) # Select the specified columns (last one of all_columns is y)
     
     def fit(self, X, y=None):
         return self

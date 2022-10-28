@@ -1,8 +1,8 @@
 from sklearn.decomposition import PCA
 from sklearn.cross_decomposition import PLSRegression
 
-PCA_BEST_NUM_FEATURES = ...
-PLS_BEST_N_COMPONENTS = ...
+PCA_BEST_NUM_FEATURES = 7
+PLS_BEST_N_COMPONENTS = 7
 
 
 def pcaSelection(numFeatures: int = PCA_BEST_NUM_FEATURES):

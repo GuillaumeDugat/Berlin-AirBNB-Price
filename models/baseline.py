@@ -27,7 +27,7 @@ class KNNMeanEstimator(KNeighborsRegressor):
     def __init__(self, columns, **kwargs):
         super().__init__(**kwargs)
         self.columns = "" # To prevent bug in __str__
-        self.selection_col = np.isin(columns[:-1], ["Latitude", "Longitude"]) # Select only latitude and longitude
+        self.selection_col = np.isin([col for col in columns if col != "Price"], ["Latitude", "Longitude"]) # Select only latitude and longitude
 
     def fit(self, X, y):
         return super().fit(X[:, self.selection_col], y)
