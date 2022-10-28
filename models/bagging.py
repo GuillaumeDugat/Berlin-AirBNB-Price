@@ -5,8 +5,12 @@ from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 
-BEST_PARAMS_BAGGING = {}
-#MSE =
+BEST_PARAMS_BAGGING = {
+    'best_estimator': LinearRegression(),
+    'max_samples': 0.6,
+    'n_estimators': 90,
+}
+#MSE = 1595
 
 N_ITER=30
 CROSS_VALIDATION = 5

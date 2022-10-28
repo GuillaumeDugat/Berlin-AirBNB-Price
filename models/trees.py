@@ -8,13 +8,14 @@ CROSS_VALIDATION = 5
 VERBOSE = 3
 
 BEST_PARAMS_TREE = {
-    'max_depth': 5,
+    'max_depth': 10,
     'max_features': 'auto',
-    'min_samples_leaf': 4,
-    'min_samples_split': 9,
-    'splitter': 'best'
+    'min_samples_leaf': 8,
+    'min_samples_split': 7,
+    'splitter': 'random'
 }
-#MSE = 1700
+#MSE = 1618
+
 
 def create_decision_tree_model(best_model: bool=False):
 
@@ -38,12 +39,12 @@ def create_decision_tree_model(best_model: bool=False):
 BEST_PARAMS_FOREST = {
     'n_estimators': 200,
     'min_samples_split': 10,
-    'min_samples_leaf': 1,
+    'min_samples_leaf': 2,
     'max_features': 'sqrt',
-    'max_depth': 70,
+    'max_depth': 10,
     'bootstrap': True
 }
-#MSE = 1600
+#MSE = 1598
 
 def create_random_forest_model(best_model: bool=False):
 
