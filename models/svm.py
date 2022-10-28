@@ -5,6 +5,10 @@ from sklearn.svm import SVR
 BEST_PARAMS_SVR = {}
 #MSE = 
 
+N_ITER=100
+CROSS_VALIDATION = 5
+VERBOSE = 3
+
 def create_SVR_model(best_model: bool=False):
 
     if best_model:
@@ -21,4 +25,5 @@ def create_SVR_model(best_model: bool=False):
         'shrinking': [True,False]
     }
     
-    return GridSearchCV(regressor, param_grid=pgrid, scoring='neg_mean_squared_error', cv=3, verbose=2)
+    #return GridSearchCV(regressor, param_grid=pgrid, scoring='neg_mean_squared_error', cv=3, verbose=2)
+    return RandomizedSearchCV(regressor, param_distributions=pgrid, scoring='neg_mean_squared_error', n_iter=N_ITER, cv=CROSS_VALIDATION, verbose=VERBOSE)

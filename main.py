@@ -1,6 +1,9 @@
 from preprocessing.main_preprocessing import preprocess
 from models.baseline import create_mean_reg, create_KNN_mean_reg, create_linear_reg, create_random_predictor
 from models.boosting import create_ada_boost, create_gradient_boosted_tree, create_xg_boost
+from models.bagging import create_bagging_model
+from models.svm import create_SVR_model
+from models.trees import create_decision_tree_model, reate_random_forest_model
 from utils import print_eval
 
 
@@ -26,6 +29,10 @@ def main():
     # model = create_ada_boost()
     # model = create_gradient_boosted_tree()
     # model = create_xg_boost()
+    # model = create_bagging_model()
+    # model = create_SVR_model()
+    # model = create_decision_tree_model()
+    # model = create_random_forest_model()
 
     print('Training model...\n')
     model.fit(X_train, Y_train)

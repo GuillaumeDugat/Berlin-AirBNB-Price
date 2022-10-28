@@ -3,6 +3,10 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 
+N_ITER=100
+CROSS_VALIDATION = 5
+VERBOSE = 3
+
 BEST_PARAMS_TREE = {
     'max_depth': 5,
     'max_features': 'auto',
@@ -28,7 +32,8 @@ def create_decision_tree_model(best_model: bool=False):
         'max_features': ['auto', 'sqrt', 'log2']
     }
 
-    return GridSearchCV(regressor, param_grid=pgrid, scoring='neg_mean_squared_error', cv=3, verbose=2)
+    #return GridSearchCV(regressor, param_grid=pgrid, scoring='neg_mean_squared_error', cv=3, verbose=2)
+    return RandomizedSearchCV(regressor, param_distributions=pgrid, scoring='neg_mean_squared_error', n_iter=N_ITER, cv=CROSS_VALIDATION, verbose=VERBOSE)
 
 BEST_PARAMS_FOREST = {
     'n_estimators': 200,
