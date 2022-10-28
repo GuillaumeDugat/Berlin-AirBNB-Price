@@ -25,8 +25,7 @@ def create_bagging_model(best_model: bool=False):
         'n_estimators': [int(x) for x in np.linspace(10,100, num=10)],
         'max_samples': [0.2,0.4,0.6,0.8,1.0],
         'max_features': [0.2,0.4,0.6,0.8,1.0],
-        'bootstrap_bis': [True, False],
-        'boostrap_features': [True, False]
+        'bootstrap_features': [True, False]
     }
 
     #return GridSearchCV(regressor, param_grid=pgrid, scoring='neg_mean_squared_error', cv=3, verbose=2)
