@@ -3,7 +3,7 @@
 
 ## :book: Description
 
-This project aims to predict the price of a night's accommodation offered on the short-term rental website Airbnb in the city of Berlin. It is part of the Machine Learning course. It is derived from a data challenge proposed by dphi.tech. Details of the data challenge is [available in this link](https://dphi.tech/challenges/data-sprint-47-airbnb-berlin-price-prediction/160/data).
+This project aims to predict the price of a night's accommodation offered on the short-term rental website Airbnb in the city of Berlin. It is part of the Machine Learning course. It is derived from a data challenge proposed by dphi.tech. Details of the data challenge is [available in this link](https://dphi.tech/challenges/data-sprint-47-airbnb-berlin-price-prediction/160/data). Our report can [be found here](Airbnb_Berlin_Prediction.pdf).
 
 
 ## :busts_in_silhouette: Team Members
